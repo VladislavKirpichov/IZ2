@@ -17,7 +17,7 @@ typedef struct vector vector;
 int vector__init(vector* nums);
 int vector__new(vector* nums, FILE* file);
 
-int distribution(vector nums);
-int compare(vector nums);
+int distribution(vector* nums);
+int compare(vector* nums);
 
 #endif //IZ2_NUMS_VECTOR_H
