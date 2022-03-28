@@ -6,7 +6,8 @@
 
 #define BUFFER_SIZE (1024*16)   // 16kb
 
-int vector__init(vector* nums) {
+vector* vector__init() {
+    vector* nums = malloc(sizeof(vector));
     nums->arr = NULL;
     nums->size = 0;
 }

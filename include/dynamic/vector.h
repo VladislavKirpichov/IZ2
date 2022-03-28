@@ -1,5 +1,5 @@
 //
-// Created by vladislav on 26.03.2022.
+// В этом файле описана структура vector и методы работы с ней
 //
 
 #ifndef IZ2_NUMS_VECTOR_H
@@ -14,7 +14,7 @@ struct vector {
 };
 typedef struct vector vector;
 
-int vector__init(vector* nums);
+vector* vector__init();
 int vector__new(vector* nums, FILE* file);
 
 int distribution(vector* nums);

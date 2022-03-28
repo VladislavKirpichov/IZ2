@@ -10,12 +10,14 @@
 
 struct vector {
     int* arr;
-    int size;
+    
+    size_t size;
+    size_t capacity;
 };
 typedef struct vector vector;
 
-int vector__init(vector* nums);
-int vector__new(vector* nums, FILE* file);
+vector* vector__init();
+vector* vector__init_with_file(FILE* file);
 
 int distribution(vector nums);
 int compare(vector nums);

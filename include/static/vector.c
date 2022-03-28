@@ -3,16 +3,22 @@
 //
 
 #include "vector.h"
+#include "file.h"
 
 #define BUFFER_SIZE (1024*16)   // 16kb
 
-int vector__init(vector* nums) {
+vector* vector__init() {
+    vector* nums = malloc(sizeof(vector));
     nums->arr = NULL;
     nums->size = 0;
+
+    return nums;
 }
 
-int vector__new(vector* nums, FILE* file) {
-    nums->size = 0;
+vector* vector__init_with_file(FILE* file) {
+    vector* nums = malloc(sizeof(vector));
+    
+    nums->arr = get_data_from_file(file);
 
-    char buffer[BUFFER_SIZE];
+    return nums;
 }
