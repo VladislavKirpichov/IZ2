@@ -6,12 +6,16 @@ set(CMAKE_C_STANDARD 99)
 set(SOURCE_FILES "main.c")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+# Add ./data files
+file(GLOB DATA_FILES "data/*.txt")
+file(COPY ${DATA_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data)
+
 set(FILE "file")
 set(VECTOR_STATIC "vector")
-set(VECTOR_STATIC_SOURCE_DIR "./include/static")
+set(VECTOR_STATIC_SOURCE_DIR "./include/vector_static")
 
-set(VECTOR_DYNAMIC "vector_dynamic")
-set(VECTOR_DYNAMIC_SOURCE_DIR "./include/dynamic")
+set(VECTOR_DYNAMIC "vector")
+set(VECTOR_DYNAMIC_SOURCE_DIR "./include/vector_dynamic")
 
 set(CMAKE_BUILD_TYPE Debug)
 

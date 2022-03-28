@@ -18,8 +18,6 @@ typedef struct vector vector;
 
 vector* vector__init();
 vector* vector__init_with_file(FILE* file);
-
-int distribution(vector nums);
-int compare(vector nums);
+int vector__free(vector* vctr);
 
 #endif //IZ2_NUMS_VECTOR_H

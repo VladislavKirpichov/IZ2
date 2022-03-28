@@ -1,27 +1,29 @@
 #include <stdio.h>
+#include <string.h>
 #include "vector.h"
 #include "file.h"
+#include "histogram.h"
 
 #define MAX_FILE_NAME 255
 
-char* get_file_name() {
-    char fileName[MAX_FILE_NAME];
-    printf("%s", "Input file name:\n");
+void get_file_name(char fileName[MAX_FILE_NAME]) {
+    printf("%s", "Input file name (from ./data):\n");
     scanf("%s", fileName);
-
-    return fileName;
 }
 
 int main() {
-    char data[] = "123\n122";
-    FILE* file = fmemopen(data, strlen(data), "r"); // Open string like file
+    char fileName[MAX_FILE_NAME];
+    get_file_name(fileName);
+
+    char data[] = "./data/";
+
+    FILE* file = fopen(strcat(data, fileName), "r");
 
     vector* myVector = vector__init_with_file(file);
 
-    for (int i = 0; i < 5; ++i) {
-        printf("%u ", myVector->arr[i]);
-    }
+    create_hist(myVector->arr, myVector->size);
 
     fclose(file);
+    vector__free(myVector);
     return 0;
 }
