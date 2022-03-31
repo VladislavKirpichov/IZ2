@@ -24,11 +24,14 @@ if (static)
     add_subdirectory(${VECTOR_STATIC_SOURCE_DIR} lib)
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${VECTOR_STATIC_SOURCE_DIR})
-    target_link_libraries(${PROJECT_NAME} ${FILE} ${VECTOR_STATIC})
+    target_link_libraries(${PROJECT_NAME} ${VECTOR_STATIC})
 
 # Dynamic lib
 elseif (dynamic)
-    add_library(${VECTOR_DYNAMIC} SHARED ${VECTOR_DYNAMIC_SOURCE_DIR}/vector.c ${VECTOR_DYNAMIC_SOURCE_DIR}/vector.h)
+    add_subdirectory(${VECTOR_DYNAMIC_SOURCE_DIR} lib)
+
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
+    set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${DCMAKE_CC_COMPILER} -pthread")
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${VECTOR_DYNAMIC_SOURCE_DIR})
     target_link_libraries(${PROJECT_NAME} ${VECTOR_DYNAMIC})

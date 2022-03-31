@@ -6,10 +6,8 @@
 #include "file.h"
 #include "histogram.h"
 
-#define BUFFER_SIZE (1024*16)   // 16kb
-
 vector* vector__init() {
-    vector* nums = malloc(sizeof(vector));
+    vector* nums = (vector*)malloc(sizeof(vector));
     nums->arr = NULL;
     nums->size = 0;
 
@@ -17,7 +15,7 @@ vector* vector__init() {
 }
 
 vector* vector__init_with_file(FILE* file) {
-    vector* nums = malloc(sizeof(vector));
+    vector* nums = (vector*)malloc(sizeof(vector));
     nums->arr = (int*)malloc(sizeof(int));
     nums->size = get_data_from_file(&(nums->arr), file);
 

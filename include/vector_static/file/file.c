@@ -19,10 +19,10 @@ int get_data_from_file(int** nums, FILE* file) {
         perror("get_data_from_file: buffer malloc error");
         return -1;
     }
+    
     size_t capacity = 1, size = 0;
-
     while (fread(buffer, sizeof(char), MAX_SIZE, file)) {
-        for (; *buffer != '\0'; buffer++, size++) {
+        for ( ; *buffer != '\0'; buffer++, size++) {
 
             if (size == capacity - 1) {
                 capacity *= 2;
@@ -46,7 +46,9 @@ int get_data_from_file(int** nums, FILE* file) {
 int make_number_from_chars(const char** buffer) {
     int num = 0;
     
-    for(; **buffer != '\n' && **buffer != '\0'; (*buffer)++) {
+    for( ; **buffer != '\n' && **buffer != '\0' &&
+           **buffer != ' '; (*buffer)++) {
+
         if (**buffer == '-') {
             if (num == 0)
                 num = 1;

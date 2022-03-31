@@ -1,5 +1,5 @@
 //
-// В этом файле описана структура vector и методы работы с ней
+// Created by vladislav on 26.03.2022.
 //
 
 #ifndef IZ2_NUMS_VECTOR_H
@@ -10,14 +10,12 @@
 
 struct vector {
     int* arr;
-    int size;
+    size_t size;
 };
 typedef struct vector vector;
 
 vector* vector__init();
-int vector__new(vector* nums, FILE* file);
-
-int distribution(vector* nums);
-int compare(vector* nums);
+vector* vector__init_with_file(FILE* file);
+int vector__free(vector* vctr);
 
 #endif //IZ2_NUMS_VECTOR_H

@@ -3,6 +3,7 @@
 #include "vector.h"
 #include "file.h"
 #include "histogram.h"
+#include <time.h>
 
 #define MAX_FILE_NAME 255
 
@@ -13,7 +14,8 @@ void get_file_name(char fileName[MAX_FILE_NAME]) {
 
 int main() {
     char fileName[MAX_FILE_NAME];
-    get_file_name(fileName);
+    // get_file_name(fileName);
+    strcpy(fileName, "225kb.txt");
 
     char data[] = "./data/";
 

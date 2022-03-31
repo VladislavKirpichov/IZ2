@@ -12,7 +12,6 @@ struct vector {
     int* arr;
     
     size_t size;
-    size_t capacity;
 };
 typedef struct vector vector;
 
