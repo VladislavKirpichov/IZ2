@@ -7,6 +7,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "vector.h"
+#include "file.h"
+#include "histogram.h"
+#include "shared_memory.h"
 
 struct vector {
     int* arr;

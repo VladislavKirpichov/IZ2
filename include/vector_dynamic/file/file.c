@@ -10,10 +10,10 @@
 
 #include "file.h"
 
-#define MAX_SIZE (1024*16)                // Max size of buffer;
-#define MAX_NUMBER_OF_ITERATIONS 1     // Every process iterate through file <= MAX_NUMBER_OF_ITERATIONS;
+#define BUFFER_SIZE (1024*16)                // Max size of buffer;
+#define MAX_NUMBER_OF_ITERATIONS 4     // Every process iterate through file <= MAX_NUMBER_OF_ITERATIONS;
 
-size_t get_size_of_file(FILE const* file) {
+size_t get_size_of_file(FILE* file) {
     size_t size = 0;
     fseek(file, 0, SEEK_END);
     size = ftell(file);
@@ -21,10 +21,11 @@ size_t get_size_of_file(FILE const* file) {
     return size;
 }
 
-int get_data_from_file(int** nums, FILE const* file) {
+int get_data_from_file(int** nums, FILE* file) {
 
     if (file == NULL) {
-        // Handle error
+        perror("file if empty!");
+        return -1;
     }
     
     size_t fsize = get_size_of_file(file);
@@ -34,32 +35,46 @@ int get_data_from_file(int** nums, FILE const* file) {
     *shared_memory_size = 0;
 
     sem_t* semaphore = (sem_t*)shared_malloc(sizeof(sem_t));
-    sem_init(&semaphore, 1, 1);
+    sem_init(semaphore, 1, 1);
 
-    // sem_init(semaphore);
+    int status = 0;
 
     // chunk - number of blocks in file
-    for (size_t i = 0; i <= fsize; i += MAX_SIZE * MAX_NUMBER_OF_ITERATIONS) {
+    for (size_t i = 0; i < fsize; i += BUFFER_SIZE * MAX_NUMBER_OF_ITERATIONS) {
         if (!fork()) {
 
             int* tempNums = (int*)malloc(sizeof(int));
             size_t tempNumsSize;
 
+            sem_wait(semaphore);
             tempNumsSize = inner_process_file_logic(&tempNums, file, i);
-            // Handle error in process
-
-            sem_wait(&semaphore);
-            fetch(&shared_memory, shared_memory_size, tempNums, tempNumsSize);
-            sem_post(&semaphore);
+            sem_post(semaphore);
+            // printf("tempNumsSize = %d\n", tempNumsSize);
             
-            printf("shared_memory_size = %d\n", *shared_memory_size);
+            if (tempNums < 0) {
+                perror("inner_process_file_logic error");
+                fclose(file);
+                free(tempNums);
+                exit(EXIT_FAILURE);
+            }
+
+            sem_wait(semaphore);
+            *shared_memory_size = fetch(&shared_memory, *shared_memory_size, tempNums, tempNumsSize);
+            sem_post(semaphore);
+
+            free(tempNums);
             fclose(file);
             exit(EXIT_SUCCESS);
         }
     }
 
-    while (wait(0) > 0);    //  Waiting for all child processes to finish
+    //  Waiting for all child processes to finish
+    while (wait(&status) > 0) {
+        if (&status < 0) 
+            return -1;
+    };
     // Handle errors in childs
+    printf("shared_memory_size = %d\n", *shared_memory_size);
 
     *nums = shared_memory;
 
@@ -67,7 +82,7 @@ int get_data_from_file(int** nums, FILE const* file) {
 }
 
 int inner_process_file_logic(int** nums, FILE* file, size_t offset) {
-    char* buffer = (char*)malloc(sizeof(char) * MAX_SIZE);
+    char* buffer = (char*)malloc(sizeof(char) * BUFFER_SIZE);
     char* buffer_mem = buffer;  // For free()
 
     if (buffer == NULL) {
@@ -77,18 +92,19 @@ int inner_process_file_logic(int** nums, FILE* file, size_t offset) {
 
     fseek(file, offset, SEEK_SET);
     size_t capacity = 1, size = 0;
+    ssize_t number_of_bytes_read = 0;
 
-    for (size_t i = 0; fread(buffer, sizeof(char),
-        MAX_SIZE, file) != 0 && i < MAX_NUMBER_OF_ITERATIONS; i++) {
+    for (size_t i = 0; (number_of_bytes_read = fread(buffer, sizeof(char),
+        BUFFER_SIZE, file)) > 0 && i < MAX_NUMBER_OF_ITERATIONS; i++) {
+        *(buffer + number_of_bytes_read) = '\0';
 
         for ( ; *buffer != '\0'; buffer++, size++) {
-
             if (size == capacity - 1) {
                 capacity *= 2;
                 *nums = realloc(*nums, sizeof(int) * capacity);
 
                 if (*nums == NULL) {
-                    free(buffer - size * sizeof(int));
+                    free(buffer - BUFFER_SIZE * i);
                     perror("get_data_from_file: tempNums realloc error");
                     return -1;
                 }
@@ -96,6 +112,8 @@ int inner_process_file_logic(int** nums, FILE* file, size_t offset) {
 
             *(*nums + size) = make_number_from_chars(&buffer);
         }
+
+        buffer = buffer_mem;
     }
 
     free(buffer_mem);
@@ -124,18 +142,15 @@ int make_number_from_chars(const char** buffer) {
     return num;
 }
 
-int fetch(int** shared_memory, size_t* shared_memory_size,
+int fetch(int** shared_memory, size_t shared_memory_size,
           const int const* src, size_t src_size) {
 
-    // if (dest == NULL || *dest == NULL || *src == NULL)
-    //     return -1;
+    if (shared_memory == NULL || *shared_memory == NULL || src == NULL)
+        return -1;
 
     for (size_t i = 0; i < src_size; ++i) {
-        *(*shared_memory + *shared_memory_size + i) = *(src + i);
-        // if (from != 0)
-        //     printf("PID: %d; from = %d; to = %d; i = %d\n", getpid(), from, to, i);
+        *(*shared_memory + shared_memory_size + i) = *(src + i);
     }
 
-    *shared_memory_size += src_size;
-    return 1;
+    return shared_memory_size + src_size;
 }

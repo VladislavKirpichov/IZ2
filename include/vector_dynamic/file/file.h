@@ -16,16 +16,15 @@
 #include <sys/mman.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <unistd.h>
 #include "shared_memory.h"
 
-size_t size_of_file(FILE const* file); // returns number of bytes in file
+size_t size_of_file(FILE* file); // returns number of bytes in file
 size_t chuks_size(size_t size);
 
-int shared_mutex__init(pthread_mutex_t* mutex);
-
-int get_data_from_file(int** nums, FILE const* file);
+int get_data_from_file(int** nums, FILE* file);
 int make_number_from_chars(const char** buffer);
 
 int inner_process_file_logic(int** nums, FILE* file, size_t offset);
-int fetch(int** shared_memory, size_t* shared_memory_size,
+int fetch(int** shared_memory, size_t shared_memory_size,
           const int const* src, size_t src_size);

@@ -16,11 +16,12 @@
 #include <pthread.h>
 #include <sys/mman.h>
 #include <semaphore.h>
+#include <unistd.h>
 #include "shared_memory.h"
 
 #define NUMBER_OF_DIGITS 10
 
-int* hist(const int const* nums, size_t* digits, const size_t from, const size_t to);
+int hist(const int const* nums, size_t* digits, const size_t from, const size_t to);
 int create_hist(const int const* nums, size_t size);
 int merge(size_t* shared_digits, size_t* src);
 int median(const int const* nums, size_t size);

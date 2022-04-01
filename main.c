@@ -15,13 +15,18 @@ void get_file_name(char fileName[MAX_FILE_NAME]) {
 int main() {
     char fileName[MAX_FILE_NAME];
     // get_file_name(fileName);
-    strcpy(fileName, "225kb.txt");
+    strcpy(fileName, "1_5gb.txt");
 
     char data[] = "./data/";
 
     FILE* file = fopen(strcat(data, fileName), "r");
 
     vector* myVector = vector__init_with_file(file);
+
+    if (myVector == NULL) {
+        perror("vector__init error");
+        return 0;
+    }
 
     create_hist(myVector->arr, myVector->size);
 

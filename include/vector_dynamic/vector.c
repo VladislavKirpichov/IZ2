@@ -3,8 +3,6 @@
 //
 
 #include "vector.h"
-#include "file.h"
-#include "histogram.h"
 
 vector* vector__init() {
     vector* nums = (vector*)malloc(sizeof(vector));
@@ -28,6 +26,6 @@ vector* vector__init_with_file(FILE* file) {
 }
 
 int vector__free(vector* vctr) {
-    free(vctr->arr);
+    shared_free(vctr->arr, vctr->size * sizeof(int));
     free(vctr);
 }
