@@ -15,7 +15,7 @@ void get_file_name(char fileName[MAX_FILE_NAME]) {
 int main() {
     char fileName[MAX_FILE_NAME];
     // get_file_name(fileName);
-    strcpy(fileName, "1_5gb.txt");
+    strcpy(fileName, "225kb.txt");
 
     char data[] = "./data/";
 

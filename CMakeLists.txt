@@ -30,7 +30,7 @@ if (static)
 elseif (dynamic)
     add_subdirectory(${VECTOR_DYNAMIC_SOURCE_DIR} lib)
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread -lm")
     set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${DCMAKE_CC_COMPILER} -pthread")
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${VECTOR_DYNAMIC_SOURCE_DIR})
