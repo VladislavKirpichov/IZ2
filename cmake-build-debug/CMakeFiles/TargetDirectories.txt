@@ -1,3 +1,0 @@
-/home/vladislav/CLionProjects/IZ2/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/vladislav/CLionProjects/IZ2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/vladislav/CLionProjects/IZ2/cmake-build-debug/CMakeFiles/IZ2.dir

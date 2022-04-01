@@ -8,6 +8,9 @@ size_t interval_size(size_t size) {
     else if (size > MEDIUM)
         return size / medium;
 
+    else if (size < small)
+        return size;
+        
     return size / small;
 }
 

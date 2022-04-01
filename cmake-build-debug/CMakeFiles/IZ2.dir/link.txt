@@ -1,1 +1,0 @@
-/usr/bin/cc -g CMakeFiles/IZ2.dir/main.c.o -o IZ2 

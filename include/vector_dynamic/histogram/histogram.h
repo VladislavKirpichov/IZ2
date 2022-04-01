@@ -2,7 +2,7 @@
 
 // This library creates histograms of the distribution of digital input data.
 
-PRINCIPLE OF OPERATION:
+WORK METHOD:
 1)  The enum INTERVAL_SIZE defines the intervals at which the processes will work.
     Number of processes = size / INTERVAL_SIZE (where size is the number of inputs)
 
@@ -22,6 +22,7 @@ PRINCIPLE OF OPERATION:
 #include <stdio.h>
 #include <pthread.h>
 #include <sys/mman.h>
+#include <sys/wait.h>
 #include <semaphore.h>
 #include <unistd.h>
 #include "shared_memory.h"

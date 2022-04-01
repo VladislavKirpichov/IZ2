@@ -4,18 +4,18 @@
 
 WORK METHOD:
 
-    ----------------------- Parent Process(file) -------------------------------
-    |                               |                                          |
-    Child Process(chunk)    Child Process(chunk)    ...     Child Process(chunk)
-    |                               |                                          |
-    |                               |                                          |
-    inner_process_logic     inner_process_logic              inner_process_logic
-    |                               |                                          |
-    |                               |                                          |
-    ----------------------->  combine_data()  <---------------------------------
-                                    |
-                                    |
-                              returns nums
+    ------------------------------- Parent Process(file) -------------------------------
+    |                                       |                                          |
+    Child Process(chunk)    ...     Child Process(chunk)    ...     Child Process(chunk)
+    |                                       |                                          |
+    |                                       |                                          |
+    inner_process_logic             inner_process_logic              inner_process_logic
+    |                                       |                                          |
+    |                                       |                                          |
+    ------------------------------->  combine_data()  <---------------------------------
+                                            |
+                                            |
+                                       returns nums
 
 
 1)  The file is split into chunks.
@@ -34,6 +34,7 @@ WORK METHOD:
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h>
+#include <sys/wait.h>
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
@@ -61,7 +62,7 @@ size_t chunk_size(size_t size);
 
 int get_data_from_file(int** nums, FILE* file);
 int make_number_from_chars(char** buffer);
-FILE* create_chunk(FILE* src_file, FILE** chunk, int size_of_chunk, int chunk_index);
+int create_chunk(FILE* src_file, FILE** chunk, int size_of_chunk, int chunk_index);
 
 int inner_process_file_logic(int** nums, FILE* chunk);
 int combine_data(int** shared_memory, size_t shared_memory_size,

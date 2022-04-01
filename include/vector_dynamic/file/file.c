@@ -1,13 +1,3 @@
-/*
-
-Принцип работы:
-
-1) В smarr (Shared Memory Array) создается общий для всех процессов массив int*.
-
-2) В цикле создаем n процессов для обработки файла (n = )
-
-*/
-
 #include "file.h"
 
 size_t get_size_of_file(FILE* file) {
@@ -34,7 +24,7 @@ size_t chunk_size(size_t size) {
     return BUFFER_SIZE * KB_128;
 }
 
-FILE* create_chunk(FILE* src_file, FILE** chunk, int size_of_chunk, int chunk_index) {
+int create_chunk(FILE* src_file, FILE** chunk, int size_of_chunk, int chunk_index) {
     // generate name of chunk file
     char filename[MAX_CHUNK_FILE_NAME_SIZE];
     sprintf(filename, "chunk_%d.txt", chunk_index);
@@ -110,8 +100,8 @@ int get_data_from_file(int** nums, FILE* file) {
         if (&status < 0) 
             return -1;
     };
+    
     // Handle errors in childs
-    printf("shared_memory_size = %d\n", *shared_memory_size);
 
     *nums = shared_memory;
 

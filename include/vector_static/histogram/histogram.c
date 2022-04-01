@@ -34,10 +34,6 @@ int create_hist(const int const* nums, size_t size) {
     printf("%s\n", "--- HISTOGRAM ---");
 
     for (int i = 0; i < NUMBER_OF_DIGITS; ++i) {
-        printf("[%d] ", i);
-        for (int j = 0; j < digits[i]; ++j) {
-            printf("*");
-        }
-        printf("\n");
+        printf("[%d] %ld\n", i, *(digits + i));
     }
 }

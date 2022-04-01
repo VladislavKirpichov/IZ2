@@ -37,6 +37,7 @@ int get_data_from_file(int** nums, FILE* file) {
 
             *(*nums + size) = make_number_from_chars(&buffer);
         }
+        buffer = buffer_mem;
     }
 
     free(buffer_mem);

@@ -2,6 +2,8 @@
 /*build
 *.log
 **cmake_install.cmake
+/cmake-build-debug
 
 /.vscode
 /.idea
+/data
