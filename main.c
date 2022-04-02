@@ -22,6 +22,17 @@ void get_file_name(char fileName[MAX_FILE_NAME]) {
     scanf("%s", fileName);
 }
 
+void compare_medians(int first_median, int second_median) {
+    if (first_median > second_median)
+        printf("The median of the first branch is greater than second:\nfirst = %d vs second = %d\n", first_median, second_median);
+
+    else if (first_median < second_median)
+        printf("The median of the second branch is greater than first:\nfirst = %d vs second = %d\n", first_median, second_median);
+
+    else
+        printf("Medians are equal: first = %d vs second = %d\n", first_median, second_median);
+}
+
 int main() {
 
     /* ---- Get file names ---- */
@@ -54,9 +65,11 @@ int main() {
     }
 
     FILE* output = fopen("output.txt", "w+");
-    create_hist(firstVector->arr, output, firstVector->size);
+    int firstVectorMed = create_hist(firstVector->arr, output, firstVector->size);
     fseek(output, 0, SEEK_CUR);
-    create_hist(secondVector->arr, output, secondVector->size);
+    int secondVectorMed = create_hist(secondVector->arr, output, secondVector->size);
+
+    compare_medians(firstVectorMed, secondVectorMed);
 
     end = clock();
 
