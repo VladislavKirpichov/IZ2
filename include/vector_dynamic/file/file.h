@@ -26,6 +26,15 @@ WORK METHOD:
 
 3)  The child process combines the received data with what is already stored in a common array 
 
+---
+
+RETURN STATUS:
+
+success:                0         
+error in memory:        -1
+error in input data:    1
+
+
 */
 
 #ifndef FILE_H
@@ -49,6 +58,13 @@ WORK METHOD:
 #define MB (1024 * 1024)
 #define GB (1024 * 1024 * 1024)
 
+enum RETURN_STATUSES {
+    SUCCESS = 0,
+    SYS_MEMORY_ERROR = -1,  // malloc, realloc errors
+    INPUT_DATA_ERROR = 1,
+    PROCESS_ERROR = -2,
+};
+
 enum NUMBER_OF_ITERATIONS {
     KB_128 = 4,
     MB_1 = 8,
@@ -66,6 +82,6 @@ int create_chunk(FILE* src_file, FILE** chunk, int size_of_chunk, int chunk_inde
 
 int inner_process_file_logic(int** nums, FILE* chunk);
 int combine_data(int** shared_memory, size_t shared_memory_size,
-          const int const* src, size_t src_size);
+          const int* src, size_t src_size);
 
 #endif

@@ -18,21 +18,22 @@ WORK METHOD:
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <pthread.h>
+#include <stdlib.h>
 #include <sys/mman.h>
 #include <sys/wait.h>
+#include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
+#include <string.h>
 #include "shared_memory.h"
 
 #define NUMBER_OF_DIGITS 10
 
 // file sizes
-#define SMALL 1024
-#define MEDIUM (1024 * 16)
-#define BIG (1024 * 128)
+#define SMALL 1024          // 1kb
+#define MEDIUM (1024 * 16)  // 16kb
+#define BIG (1024 * 128)    // 128kb
 
 enum INTERVAL_SIZE {
     small = 4,
@@ -40,9 +41,9 @@ enum INTERVAL_SIZE {
     big = 128,
 };
 
-int hist(const int const* nums, size_t* digits, const size_t from, const size_t to);
-int create_hist(const int const* nums, size_t size);
+int hist(const int* nums, size_t* digits, const size_t from, const size_t to);
+int create_hist(const int* nums, FILE* output, size_t size);
 int merge(size_t* shared_digits, size_t* src);
-int median(const int const* nums, size_t size);
+int median(size_t* shared_digits);
 
 #endif

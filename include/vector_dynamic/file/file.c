@@ -37,18 +37,17 @@ int create_chunk(FILE* src_file, FILE** chunk, int size_of_chunk, int chunk_inde
     // read from src
     number_of_bytes_read = fread(buffer, sizeof(char), size_of_chunk, src_file);
     buffer[number_of_bytes_read] = '\0';
-    // printf("number_of_bytes_read = %d; size_of_chunk = %d\n", number_of_bytes_read, size_of_chunk);
-
+    
     fwrite(buffer, sizeof(char), number_of_bytes_read, *chunk);
     fseek(*chunk, 0, SEEK_SET);
-    return 1;
+    return SUCCESS;
 }
 
 int get_data_from_file(int** nums, FILE* file) {
 
     if (file == NULL) {
         perror("file if empty!");
-        return -1;
+        return INPUT_DATA_ERROR;
     }
     
     size_t fsize = get_size_of_file(file);
@@ -85,8 +84,17 @@ int get_data_from_file(int** nums, FILE* file) {
                 exit(EXIT_FAILURE);
             }
 
+            // COMBINING DATA (mutex/semaphore nedeed)
             sem_wait(semaphore);
-            *shared_memory_size = combine_data(&shared_memory, *shared_memory_size, tempNums, tempNumsSize);
+
+            *shared_memory_size = combine_data(&shared_memory,
+                *shared_memory_size, tempNums, tempNumsSize);
+
+            if ((*shared_memory_size) == INPUT_DATA_ERROR) {     
+                free(tempNums);
+                exit(EXIT_FAILURE);
+            }
+
             sem_post(semaphore);
 
             free(tempNums);
@@ -97,24 +105,27 @@ int get_data_from_file(int** nums, FILE* file) {
 
     //  Waiting for all child processes to finish
     while (wait(&status) > 0) {
-        if (&status < 0) 
-            return -1;
+        if (status < 0) {
+            shared_free(shared_memory, *shared_memory_size);
+            return PROCESS_ERROR;
+        }
     };
-    
-    // Handle errors in childs
 
     *nums = shared_memory;
 
-    return *shared_memory_size;
+    size_t size = *shared_memory_size;
+    shared_free(semaphore, sizeof(sem_t));
+    shared_free(shared_memory_size, sizeof(size_t));
+    return size;
 }
 
 int inner_process_file_logic(int** nums, FILE* chunk) {
-    char* buffer = (char*)malloc(sizeof(char) * BUFFER_SIZE);
+    char* buffer = (char*)malloc(sizeof(char) * BUFFER_SIZE + 1);
     char* buffer_mem = buffer;  // For free()
 
     if (buffer == NULL) {
         perror("get_data_from_file: buffer malloc error");
-        return -1;
+        return SYS_MEMORY_ERROR;
     }
 
     size_t capacity = 1, size = 0;
@@ -124,7 +135,6 @@ int inner_process_file_logic(int** nums, FILE* chunk) {
         *(buffer + number_of_bytes_read) = '\0';
 
         for ( ; *buffer != '\0'; buffer++, size++) {
-            // printf("%c", *buffer);
             if (size == capacity - 1) {
                 capacity *= 2;
                 *nums = realloc(*nums, sizeof(int) * capacity);
@@ -132,7 +142,7 @@ int inner_process_file_logic(int** nums, FILE* chunk) {
                 if (*nums == NULL) {
                     free(buffer - BUFFER_SIZE * i);
                     perror("get_data_from_file: tempNums realloc error");
-                    return -1;
+                    return SYS_MEMORY_ERROR;
                 }
             }
 
@@ -169,10 +179,10 @@ int make_number_from_chars(char** buffer) {
 }
 
 int combine_data(int** shared_memory, size_t shared_memory_size,
-          const int const* src, size_t src_size) {
+          const int* src, size_t src_size) {
 
     if (shared_memory == NULL || *shared_memory == NULL || src == NULL)
-        return -1;
+        return INPUT_DATA_ERROR;
 
     for (size_t i = 0; i < src_size; ++i) {
         *(*shared_memory + shared_memory_size + i) = *(src + i);
