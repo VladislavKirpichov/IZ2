@@ -5,7 +5,7 @@ set(FILE_SOURCE_DIR "file")
 set(HISTOGRAM_SOURCE_DIR "histogram")
 set(SHARED_MEMORY "shared_memory")
 
-if (sanitaizer_test OR test)
+if (test)
     set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-fprofile-arcs -ftest-coverage -fPIC -O0")
 else () 
     set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-fPIC -O0")  
