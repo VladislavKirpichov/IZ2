@@ -1,0 +1,53 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: build dynamic lib
+        run: cmake -Ddynamic=true -B build_d
+        
+      - name: build static lib
+        run: cmake -Dstatic=true -B build_s
+        
+  test-static:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: install gtest
+        run: sudo apt install libgtest-dev
+
+      - name: build static lib
+        run: cmake -Dstatic=true -B build_s -Dtest=true
+        
+      - name: test
+        run: cd build_s && make && tests/tests
+        
+  test-dynamic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: install gtest
+        run: sudo apt install libgtest-dev
+
+      - name: build dynamic lib
+        run: cmake -Ddynamic=true -B build_d -Dtest=true
+        
+      - name: test
+        run: cd build_d && make && tests/tests
+        
