@@ -2,8 +2,16 @@
   This file describes methods for constructing a histogram
 */
 
-#include <stdlib.h>
+#ifndef HISTOGRAM_H
+#define HISTOGRAM_H
 
-int* hist(const int const* nums, size_t* digits, size_t size);
-int create_hist(const int const* nums, size_t size);
-int median(const int const* nums, size_t size);
+#include <stdlib.h>
+#include <stdio.h>
+
+#define NUMBER_OF_DIGITS 10
+
+int hist(const int* nums, size_t* digits, size_t size);
+int create_hist(const int* nums, FILE* output, size_t size);
+int median(size_t* digits);
+
+#endif

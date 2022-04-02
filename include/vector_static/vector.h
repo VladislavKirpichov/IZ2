@@ -10,7 +10,6 @@
 
 struct vector {
     int* arr;
-    
     size_t size;
 };
 typedef struct vector vector;

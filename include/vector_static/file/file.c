@@ -1,6 +1,6 @@
 #include "file.h"
 
-#define MAX_SIZE 1024*16
+#define BUFFER_SIZE 1024*16
 
 int get_data_from_file(int** nums, FILE* file) {
 
@@ -12,35 +12,49 @@ int get_data_from_file(int** nums, FILE* file) {
         perror("Nums is empty!");
     }
 
-    char* buffer = (char*)malloc(sizeof(char) * MAX_SIZE);
+    char* buffer = (char*)malloc(sizeof(char) * BUFFER_SIZE);
     char* buffer_mem = buffer;  // For free()
 
     if (buffer == NULL) {
         perror("get_data_from_file: buffer malloc error");
         return -1;
     }
+
+    int* tempNums = (int*)malloc(sizeof(int));
+    if (tempNums == NULL) {
+        perror("get_data_from_file: tempNums malloc error");
+        return -1;
+    }
     
     size_t capacity = 1, size = 0;
-    while (fread(buffer, sizeof(char), MAX_SIZE, file)) {
+    ssize_t number_of_bytes_read = 0;
+
+    while ((number_of_bytes_read = fread(buffer, sizeof(char), BUFFER_SIZE, file)) > 0) {
+        *(buffer + number_of_bytes_read) = '\0';
+        
         for ( ; *buffer != '\0'; buffer++, size++) {
 
             if (size == capacity - 1) {
                 capacity *= 2;
-                *nums = realloc(*nums, sizeof(int) * capacity);
+                tempNums = realloc(tempNums, sizeof(int) * capacity);
 
-                if (*nums == NULL) {
+                if (tempNums == NULL) {
                     free(buffer - size * sizeof(int));
                     perror("get_data_from_file: nums realloc error");
                     return -1;
                 }
             }
 
-            *(*nums + size) = make_number_from_chars(&buffer);
+            *(tempNums + size) = make_number_from_chars(&buffer);
         }
+
         buffer = buffer_mem;
     }
 
+    *nums = tempNums;
+    
     free(buffer_mem);
+    fseek(file, 0, SEEK_SET);
     return size;
 }
 

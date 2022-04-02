@@ -77,10 +77,13 @@ int create_hist(const int* nums, FILE* output, size_t size) {
         fprintf(output, "[%d] %ld\n", i, *(shared_digits + i));
     }
 
-    fprintf(output, "Median: %d\n", median(shared_digits));
+    int med = median(shared_digits);
+    fprintf(output, "Median: %d\n", med);
 
     shared_free(semaphore, sizeof(sem_t));
     shared_free(shared_digits, sizeof(int) * NUMBER_OF_DIGITS);
+
+    return med;
 }
 
 int merge(size_t* shared_digits, size_t* src) {

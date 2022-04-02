@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <stdio.h>
-#include <random>
 
 extern "C" {
     #include "vector.h"
@@ -50,7 +49,7 @@ TEST(file, chunk) {
     EXPECT_EQ(1024 * 4 * 16, chunk_size(1024));
 }
 
-TEST(GET_DATA_FROM_FILE, small_data) {
+TEST(GetDataFromFile, small_data) {
     char buffer[] = "123\n123\n123";
     FILE* file = fmemopen(buffer, 12, "r");
 
@@ -65,33 +64,7 @@ TEST(GET_DATA_FROM_FILE, small_data) {
     fclose(file);
 }
 
-/*
-TEST(get_data_from_file, medium_data) {
-    int answer[1024 * 16];
-    for (int i = 0; i < 1024*16; ++i) {
-        answer[i] = 1;
-    }
-
-    // generate input data
-    char buffer[1024L * 16L * 2L]; // 32kb array
-    for (long i = 0; i < 1024L*16L*2L; ++i) {
-        buffer[i] = '1';
-        buffer[++i] = '\n';
-    }
-
-    FILE* file = fmemopen(buffer, 1024 * 16 * 2, "r");
-    int* arr;
-    EXPECT_EQ(1024 * 16, get_data_from_file(&arr, file));
-    for (int i = 0; i < 1024 * 16; ++i) {
-        EXPECT_TRUE(arr[i] == answer[i]);
-    }
-
-    shared_free(arr, 3);
-    fclose(file);
-}
-*/
-
-TEST(HISTOGRAM, hist_test_small__1) {
+TEST(Histogram, hist_test_small__1) {
     int nums[] = { 1 };
     size_t answer[] = {0, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -107,7 +80,7 @@ TEST(HISTOGRAM, hist_test_small__1) {
     free(digits);
 }
 
-TEST(HISTOGRAM, hist_test_small__2) {
+TEST(Histogram, hist_test_small__2) {
     int nums[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     size_t answer[] = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
@@ -123,7 +96,7 @@ TEST(HISTOGRAM, hist_test_small__2) {
     free(digits);
 }
 
-TEST(HISTOGRAM, hist_test_medium) {
+TEST(Histogram, hist_test_medium) {
     int nums[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -159,7 +132,7 @@ TEST(HISTOGRAM, hist_test_medium) {
     free(digits);
 }
 
-TEST(histogram, hist_test_not_valid_input) {
+TEST(Histogram, hist_test_not_valid_input) {
     int nums[] = {1};
     size_t answer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -179,7 +152,7 @@ TEST(histogram, hist_test_not_valid_input) {
     free(digits);
 }
 
-TEST(GENERAL, input_small) {
+TEST(General, input_small) {
     FILE* input = fopen("./tests/input/test1.txt", "r");
     FILE* answer = fopen("./tests/answers/answer1.txt", "r");
 
@@ -196,7 +169,7 @@ TEST(GENERAL, input_small) {
     vector__free(tVector);
 }
 
-TEST(GENERAL, input_small__1) {
+TEST(General, input_small__1) {
     FILE* input = fopen("./tests/input/test1.txt", "r");
     FILE* answer = fopen("./tests/answers/answer1.txt", "r");
 
@@ -213,7 +186,7 @@ TEST(GENERAL, input_small__1) {
     vector__free(tVector);
 }
 
-TEST(GENERAL, input_small__2) {
+TEST(General, input_small__2) {
     FILE* input = fopen("./tests/input/test2.txt", "r");
     FILE* answer = fopen("./tests/answers/answer2.txt", "r");
 
@@ -230,7 +203,7 @@ TEST(GENERAL, input_small__2) {
     vector__free(tVector);
 }
 
-TEST(GENERAL_STRESS, stress__1mb) {
+TEST(GeneralStress, stress__1mb) {
     FILE* input = fopen("./tests/input/stest_1mb.txt", "r");
     FILE* answer = fopen("./tests/answers/sanswer_1mb.txt", "r");
 
@@ -247,7 +220,7 @@ TEST(GENERAL_STRESS, stress__1mb) {
     vector__free(tVector);
 }
 
-TEST(GENERAL_STRESS, stress__100mb) {
+TEST(GeneralStress, stress__100mb) {
     FILE* input = fopen("./tests/input/stest_100mb.txt", "r");
     FILE* answer = fopen("./tests/answers/sanswer_100mb.txt", "r");
 
@@ -262,4 +235,10 @@ TEST(GENERAL_STRESS, stress__100mb) {
     fclose(answer);
     fclose(output);
     vector__free(tVector);
+}
+
+int main(int argc, char **argv)
+{
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

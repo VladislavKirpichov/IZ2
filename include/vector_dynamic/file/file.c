@@ -87,8 +87,8 @@ int get_data_from_file(int** nums, FILE* file) {
             // COMBINING DATA (mutex/semaphore nedeed)
             sem_wait(semaphore);
 
-            *shared_memory_size = combine_data(&shared_memory,
-                *shared_memory_size, tempNums, tempNumsSize);
+            *shared_memory_size = combine_data(&shared_memory, *shared_memory_size,
+                                                tempNums, tempNumsSize);
 
             if ((*shared_memory_size) == INPUT_DATA_ERROR) {     
                 free(tempNums);
