@@ -28,19 +28,15 @@ elseif (dynamic)
     set(VECTOR_SOURCE_DIR "./include/vector_dynamic")
     add_subdirectory(${VECTOR_SOURCE_DIR} lib)
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread -lm")
-    set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${DCMAKE_CC_COMPILER} -pthread -fsanitize=address")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
+    set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${DCMAKE_CC_COMPILER} -pthread")
 
     target_include_directories(${PROJECT_NAME} PUBLIC ${VECTOR_SOURCE_DIR})
     target_link_libraries(${PROJECT_NAME} ${VECTOR})
 
 endif ()
 
-if (sanitaizer_test)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${DCMAKE_CXX_COMPILER} -fsanitize=address -coverage -lgcov -g -Wall -Werror")
-    set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${DCMAKE_CC_COMPILER} -fsanitize=address")
-
-elseif (test)
+if (test)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LCOV_COMPILE_FLAGS} -pthread -coverage -lgcov -g -Wall -Werror")
     set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_FLAGS} ${LCOV_LINK_FLAGS} -pthread")
 
@@ -48,6 +44,7 @@ endif ()
 
 set(TESTS_DIR "./tests")
 
-if (sanitaizer_test OR test)
+if (test)
     add_subdirectory(${TESTS_DIR})
+    
 endif ()
